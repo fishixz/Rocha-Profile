@@ -7,14 +7,23 @@ import {
 import { COLORS } from "./profile-data";
 import { FieldCard, LicenseRow, SmallStat, ProgressBar, IconBox } from "./ui-core";
 
+function TwoColRow({ left, right, top = 0 }) {
+  return (
+    <div style={{ display: "flex", width: "100%", marginTop: top }}>
+      <div style={{ display: "flex", flex: 1, marginRight: 9 }}>{left}</div>
+      <div style={{ display: "flex", flex: 1, marginLeft: 9 }}>{right}</div>
+    </div>
+  );
+}
+
 function PropertyMetric({ icon, label, value, sub }) {
   const Icon = icon;
   return (
-    <div style={{ height: 118, borderRadius: 15, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", alignItems: "center", padding: "0 18px" }}>
+    <div style={{ width: "100%", height: 118, borderRadius: 15, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", alignItems: "center", padding: "0 18px" }}>
       <IconBox icon={Icon} size={21} />
       <div style={{ marginLeft: 15, display: "flex", flexDirection: "column", minWidth: 0 }}>
-        <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 750, letterSpacing: .45 }}>{label.toUpperCase()}</div>
-        <div style={{ color: COLORS.white, fontSize: 28, fontWeight: 850, marginTop: 7, lineHeight: 1 }}>{value}</div>
+        <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 700, letterSpacing: .45 }}>{label.toUpperCase()}</div>
+        <div style={{ color: COLORS.white, fontSize: 28, fontWeight: 800, marginTop: 7, lineHeight: 1 }}>{value}</div>
         <div style={{ color: COLORS.muted2, fontSize: 11, marginTop: 7, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 250 }}>{sub}</div>
       </div>
     </div>
@@ -43,16 +52,21 @@ export function LicensesPage({ profile }) {
 
 export function PropertiesPage({ profile }) {
   return (
-    <div style={{ width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, alignContent: "start" }}>
-      <PropertyMetric icon={Home} label="Casas" value={profile.casas} sub={profile.casaPrincipal} />
-      <PropertyMetric icon={Building2} label="Empresas" value={profile.empresas} sub={profile.empresaPrincipal} />
-      <PropertyMetric icon={CarFront} label="Veículos" value={profile.veiculos} sub={profile.veiculoPrincipal} />
-      <PropertyMetric icon={Warehouse} label="Garagens" value={profile.garagens} sub={profile.garagens > 0 ? "Garagens registradas no personagem" : "Nenhuma garagem"} />
+    <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+      <TwoColRow
+        left={<PropertyMetric icon={Home} label="Casas" value={profile.casas} sub={profile.casaPrincipal} />}
+        right={<PropertyMetric icon={Building2} label="Empresas" value={profile.empresas} sub={profile.empresaPrincipal} />}
+      />
+      <TwoColRow
+        top={18}
+        left={<PropertyMetric icon={CarFront} label="Veículos" value={profile.veiculos} sub={profile.veiculoPrincipal} />}
+        right={<PropertyMetric icon={Warehouse} label="Garagens" value={profile.garagens} sub={profile.garagens > 0 ? "Garagens registradas no personagem" : "Nenhuma garagem"} />}
+      />
 
-      <div style={{ gridColumn: "1 / -1", height: 96, borderRadius: 15, border: `1px solid ${COLORS.border}`, background: "linear-gradient(90deg,#0D1826,#0B1B2B)", display: "flex", alignItems: "center", padding: "0 20px" }}>
+      <div style={{ marginTop: 18, height: 96, borderRadius: 15, border: `1px solid ${COLORS.border}`, background: "linear-gradient(90deg,#0D1826,#0B1B2B)", display: "flex", alignItems: "center", padding: "0 20px" }}>
         <IconBox icon={Home} size={21} />
         <div style={{ marginLeft: 15, display: "flex", flexDirection: "column" }}>
-          <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 750, letterSpacing: .45 }}>RESUMO PATRIMONIAL</div>
+          <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 700, letterSpacing: .45 }}>RESUMO PATRIMONIAL</div>
           <div style={{ color: COLORS.white, fontSize: 19, fontWeight: 800, marginTop: 7 }}>
             {profile.casas + profile.empresas + profile.veiculos + profile.garagens} registro(s) vinculados ao personagem
           </div>
@@ -74,11 +88,18 @@ export function StatisticsPage({ profile }) {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-        {stats.map(([Icon, label, value]) => (
-          <SmallStat key={label} icon={Icon} label={label} value={String(value)} />
-        ))}
+      <div style={{ display: "flex", width: "100%" }}>
+        <div style={{ display: "flex", flex: 1, marginRight: 6 }}><SmallStat icon={stats[0][0]} label={stats[0][1]} value={String(stats[0][2])} /></div>
+        <div style={{ display: "flex", flex: 1, marginLeft: 6, marginRight: 6 }}><SmallStat icon={stats[1][0]} label={stats[1][1]} value={String(stats[1][2])} /></div>
+        <div style={{ display: "flex", flex: 1, marginLeft: 6 }}><SmallStat icon={stats[2][0]} label={stats[2][1]} value={String(stats[2][2])} /></div>
       </div>
+
+      <div style={{ display: "flex", width: "100%", marginTop: 16 }}>
+        <div style={{ display: "flex", flex: 1, marginRight: 6 }}><SmallStat icon={stats[3][0]} label={stats[3][1]} value={String(stats[3][2])} /></div>
+        <div style={{ display: "flex", flex: 1, marginLeft: 6, marginRight: 6 }}><SmallStat icon={stats[4][0]} label={stats[4][1]} value={String(stats[4][2])} /></div>
+        <div style={{ display: "flex", flex: 1, marginLeft: 6 }}><SmallStat icon={stats[5][0]} label={stats[5][1]} value={String(stats[5][2])} /></div>
+      </div>
+
       <div style={{ marginTop: 16 }}>
         <FieldCard icon={Trophy} label="Pontos de evento" value={String(profile.pontosEvento)} accent={COLORS.amber} compact />
       </div>
@@ -90,7 +111,7 @@ function InventorySlot({ name, qty }) {
   const empty = !name;
 
   return (
-    <div style={{ height: 96, borderRadius: 13, border: `1px solid ${empty ? COLORS.borderSoft : COLORS.border}`, background: empty ? "#09131E" : COLORS.panel2, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", opacity: empty ? .58 : 1 }}>
+    <div style={{ width: "100%", height: 96, borderRadius: 13, border: `1px solid ${empty ? COLORS.borderSoft : COLORS.border}`, background: empty ? "#09131E" : COLORS.panel2, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", opacity: empty ? .58 : 1 }}>
       <IconBox icon={Package} size={20} color={empty ? COLORS.muted2 : COLORS.white} bg={empty ? "#101923" : COLORS.panel3} />
       <div style={{ marginTop: 7, fontSize: 12, fontWeight: 700, color: empty ? COLORS.muted2 : COLORS.text, maxWidth: 132, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
         {empty ? "Slot vazio" : name}
@@ -104,6 +125,27 @@ function InventorySlot({ name, qty }) {
   );
 }
 
+function InventoryRow({ items, start }) {
+  return (
+    <div style={{ display: "flex", width: "100%", marginTop: start === 0 ? 0 : 12 }}>
+      {[0, 1, 2, 3].map((offset) => {
+        const item = items[start + offset] || ["", ""];
+        const style = offset === 0
+          ? { marginRight: 6 }
+          : offset === 3
+            ? { marginLeft: 6 }
+            : { marginLeft: 6, marginRight: 6 };
+
+        return (
+          <div key={start + offset} style={{ display: "flex", flex: 1, ...style }}>
+            <InventorySlot name={item[0]} qty={item[1]} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function InventoryPage({ profile }) {
   const items = [...profile.items];
   while (items.length < 12) items.push(["", ""]);
@@ -113,7 +155,7 @@ export function InventoryPage({ profile }) {
       <div style={{ height: 78, borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", alignItems: "center", padding: "0 18px" }}>
         <IconBox icon={Weight} size={20} />
         <div style={{ marginLeft: 14, width: 170, display: "flex", flexDirection: "column" }}>
-          <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 750 }}>CAPACIDADE</div>
+          <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 700 }}>CAPACIDADE</div>
           <div style={{ color: COLORS.white, fontSize: 18, fontWeight: 800, marginTop: 4 }}>{profile.peso.toFixed(1)} / {profile.pesoMax.toFixed(1)} kg</div>
         </div>
         <div style={{ flex: 1, marginLeft: 18 }}>
@@ -121,10 +163,10 @@ export function InventoryPage({ profile }) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginTop: 15 }}>
-        {items.slice(0, 12).map(([name, qty], index) => (
-          <InventorySlot key={`${index}-${name}`} name={name} qty={qty} />
-        ))}
+      <div style={{ display: "flex", flexDirection: "column", marginTop: 15 }}>
+        <InventoryRow items={items} start={0} />
+        <InventoryRow items={items} start={4} />
+        <InventoryRow items={items} start={8} />
       </div>
     </div>
   );
