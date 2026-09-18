@@ -2,27 +2,39 @@ import React from "react";
 import {
   User, IdCard, Phone, Mars, Venus, Gauge, Star, Clock, CalendarDays,
   LogIn, Award, Wallet, Landmark, DollarSign, Receipt, Briefcase,
-  Building2, Shield, Heart, AlertTriangle, Timer
+  Building2, Heart, AlertTriangle, Timer
 } from "lucide-react";
 import { brMoney, COLORS } from "./profile-data";
 import { FieldCard, PlayerStatusCard, DiscordCard, ProgressBar, SmallStat, IconBox } from "./ui-core";
+
+function TwoColRow({ left, right, top = 0 }) {
+  return (
+    <div style={{ display: "flex", width: "100%", marginTop: top }}>
+      <div style={{ display: "flex", flex: 1, marginRight: 9 }}>{left}</div>
+      <div style={{ display: "flex", flex: 1, marginLeft: 9 }}>{right}</div>
+    </div>
+  );
+}
 
 export function IdentityPage({ profile }) {
   const SexIcon = String(profile.sexo).toLowerCase().startsWith("f") ? Venus : Mars;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-        <FieldCard icon={User} label="Nome completo" value={profile.nome} accent={COLORS.white} />
-        <FieldCard icon={IdCard} label="Identificação única" value={`#${profile.id}`} accent={COLORS.white} />
-        <FieldCard icon={SexIcon} label="Sexo" value={profile.sexo} accent={COLORS.white} />
-        <FieldCard icon={Phone} label="Telefone" value={profile.telefone} accent={COLORS.white} />
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, marginTop: 18 }}>
-        <PlayerStatusCard online={profile.online} />
-        <DiscordCard linked={profile.discord} username={profile.discordNome} />
-      </div>
+      <TwoColRow
+        left={<div style={{ width: "100%" }}><FieldCard icon={User} label="Nome completo" value={profile.nome} accent={COLORS.white} /></div>}
+        right={<div style={{ width: "100%" }}><FieldCard icon={IdCard} label="Identificação única" value={`#${profile.id}`} accent={COLORS.white} /></div>}
+      />
+      <TwoColRow
+        top={18}
+        left={<div style={{ width: "100%" }}><FieldCard icon={SexIcon} label="Sexo" value={profile.sexo} accent={COLORS.white} /></div>}
+        right={<div style={{ width: "100%" }}><FieldCard icon={Phone} label="Telefone" value={profile.telefone} accent={COLORS.white} /></div>}
+      />
+      <TwoColRow
+        top={18}
+        left={<div style={{ width: "100%" }}><PlayerStatusCard online={profile.online} /></div>}
+        right={<div style={{ width: "100%" }}><DiscordCard linked={profile.discord} username={profile.discordNome} /></div>}
+      />
     </div>
   );
 }
@@ -30,41 +42,45 @@ export function IdentityPage({ profile }) {
 export function ProgressPage({ profile }) {
   const xpPct = Math.round((profile.xpAtual / Math.max(1, profile.xpMax)) * 100);
 
-  return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1.1fr .9fr", gap: 18 }}>
-        <div style={{ height: 156, borderRadius: 16, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", padding: "20px 22px", flexDirection: "column" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <IconBox icon={Gauge} size={22} />
-            <div style={{ marginLeft: 14, display: "flex", flexDirection: "column" }}>
-              <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 750, letterSpacing: .45 }}>NÍVEL ATUAL</div>
-              <div style={{ color: COLORS.white, fontSize: 30, fontWeight: 850, marginTop: 5 }}>{profile.nivel}</div>
-            </div>
-            <div style={{ marginLeft: "auto", color: COLORS.babyBlue, fontSize: 13, fontWeight: 800 }}>{xpPct}%</div>
-          </div>
-          <div style={{ marginTop: 18 }}>
-            <ProgressBar value={profile.xpAtual} max={profile.xpMax} label="EXPERIÊNCIA" rightLabel={`${profile.xpAtual.toLocaleString("pt-BR")} / ${profile.xpMax.toLocaleString("pt-BR")} XP`} />
-          </div>
+  const xpCard = (
+    <div style={{ width: "100%", height: 156, borderRadius: 16, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", padding: "20px 22px", flexDirection: "column" }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <IconBox icon={Gauge} size={22} />
+        <div style={{ marginLeft: 14, display: "flex", flexDirection: "column" }}>
+          <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 700, letterSpacing: .45 }}>NÍVEL ATUAL</div>
+          <div style={{ color: COLORS.white, fontSize: 30, fontWeight: 800, marginTop: 5 }}>{profile.nivel}</div>
         </div>
+        <div style={{ marginLeft: "auto", color: COLORS.babyBlue, fontSize: 13, fontWeight: 800 }}>{xpPct}%</div>
+      </div>
+      <div style={{ marginTop: 18 }}>
+        <ProgressBar value={profile.xpAtual} max={profile.xpMax} label="EXPERIÊNCIA" rightLabel={`${profile.xpAtual.toLocaleString("pt-BR")} / ${profile.xpMax.toLocaleString("pt-BR")} XP`} />
+      </div>
+    </div>
+  );
 
-        <div style={{ height: 156, borderRadius: 16, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", padding: "20px 22px", flexDirection: "column" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <IconBox icon={Star} size={22} />
-            <div style={{ marginLeft: 14, display: "flex", flexDirection: "column" }}>
-              <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 750, letterSpacing: .45 }}>RESPEITO</div>
-              <div style={{ color: COLORS.white, fontSize: 30, fontWeight: 850, marginTop: 5 }}>{profile.respeito}<span style={{ fontSize: 15, color: COLORS.muted }}>/100</span></div>
-            </div>
-          </div>
-          <div style={{ marginTop: 18 }}>
-            <ProgressBar value={profile.respeito} max={100} label="REPUTAÇÃO DO PERSONAGEM" />
-          </div>
+  const respectCard = (
+    <div style={{ width: "100%", height: 156, borderRadius: 16, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", padding: "20px 22px", flexDirection: "column" }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <IconBox icon={Star} size={22} />
+        <div style={{ marginLeft: 14, display: "flex", flexDirection: "column" }}>
+          <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 700, letterSpacing: .45 }}>RESPEITO</div>
+          <div style={{ color: COLORS.white, fontSize: 30, fontWeight: 800, marginTop: 5 }}>{profile.respeito}<span style={{ fontSize: 15, color: COLORS.muted }}>/100</span></div>
         </div>
       </div>
+      <div style={{ marginTop: 18 }}>
+        <ProgressBar value={profile.respeito} max={100} label="REPUTAÇÃO DO PERSONAGEM" />
+      </div>
+    </div>
+  );
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 18, marginTop: 18 }}>
-        <SmallStat icon={Clock} label="Horas jogadas" value={profile.horas} />
-        <SmallStat icon={CalendarDays} label="Registro" value={profile.registro} />
-        <SmallStat icon={LogIn} label="Último login" value={profile.ultimoLogin} />
+  return (
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+      <TwoColRow left={xpCard} right={respectCard} />
+
+      <div style={{ display: "flex", width: "100%", marginTop: 18 }}>
+        <div style={{ display: "flex", flex: 1, marginRight: 6 }}><SmallStat icon={Clock} label="Horas jogadas" value={profile.horas} /></div>
+        <div style={{ display: "flex", flex: 1, marginLeft: 6, marginRight: 6 }}><SmallStat icon={CalendarDays} label="Registro" value={profile.registro} /></div>
+        <div style={{ display: "flex", flex: 1, marginLeft: 6 }}><SmallStat icon={LogIn} label="Último login" value={profile.ultimoLogin} /></div>
       </div>
 
       <div style={{ marginTop: 18 }}>
@@ -85,10 +101,21 @@ export function FinancesPage({ profile }) {
   ];
 
   return (
-    <div style={{ display: "grid", width: "100%", gridTemplateColumns: "1fr 1fr", gap: 18, alignContent: "start" }}>
-      {cards.map(([Icon, label, value, accent]) => (
-        <FieldCard key={label} icon={Icon} label={label} value={value} accent={accent} />
-      ))}
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+      <TwoColRow
+        left={<div style={{ width: "100%" }}><FieldCard icon={cards[0][0]} label={cards[0][1]} value={cards[0][2]} accent={cards[0][3]} /></div>}
+        right={<div style={{ width: "100%" }}><FieldCard icon={cards[1][0]} label={cards[1][1]} value={cards[1][2]} accent={cards[1][3]} /></div>}
+      />
+      <TwoColRow
+        top={18}
+        left={<div style={{ width: "100%" }}><FieldCard icon={cards[2][0]} label={cards[2][1]} value={cards[2][2]} accent={cards[2][3]} /></div>}
+        right={<div style={{ width: "100%" }}><FieldCard icon={cards[3][0]} label={cards[3][1]} value={cards[3][2]} accent={cards[3][3]} /></div>}
+      />
+      <TwoColRow
+        top={18}
+        left={<div style={{ width: "100%" }}><FieldCard icon={cards[4][0]} label={cards[4][1]} value={cards[4][2]} accent={cards[4][3]} /></div>}
+        right={<div style={{ width: "100%" }}><FieldCard icon={cards[5][0]} label={cards[5][1]} value={cards[5][2]} accent={cards[5][3]} /></div>}
+      />
     </div>
   );
 }
@@ -96,32 +123,38 @@ export function FinancesPage({ profile }) {
 export function RoleplayPage({ profile }) {
   const wanted = profile.procurado > 0;
 
+  const wantedCard = (
+    <div style={{ width: "100%", height: 104, borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", alignItems: "center", padding: "0 18px" }}>
+      <IconBox icon={AlertTriangle} color={wanted ? COLORS.amber : COLORS.green} />
+      <div style={{ marginLeft: 15, display: "flex", flexDirection: "column" }}>
+        <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 700, letterSpacing: .45 }}>NÍVEL DE PROCURADO</div>
+        <div style={{ color: wanted ? COLORS.amber : COLORS.white, fontSize: 22, fontWeight: 800, marginTop: 8 }}>{wanted ? `${profile.procurado} estrela(s)` : "Sem procura"}</div>
+      </div>
+    </div>
+  );
+
+  const custodyCard = (
+    <div style={{ width: "100%", height: 104, borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", alignItems: "center", padding: "0 18px" }}>
+      <IconBox icon={Timer} color={profile.prisaoAtual ? COLORS.red : COLORS.green} />
+      <div style={{ marginLeft: 15, display: "flex", flexDirection: "column" }}>
+        <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 700, letterSpacing: .45 }}>SITUAÇÃO PENAL</div>
+        <div style={{ color: profile.prisaoAtual ? COLORS.red : COLORS.white, fontSize: 22, fontWeight: 800, marginTop: 8 }}>{profile.prisaoAtual ? "Em prisão" : "Em liberdade"}</div>
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-        <FieldCard icon={Briefcase} label="Emprego" value={profile.emprego} />
-        <FieldCard icon={Award} label="Cargo" value={profile.cargo} />
-        <FieldCard icon={Building2} label="Organização" value={profile.organizacao} />
-        <FieldCard icon={Heart} label="Estado civil" value={profile.estadoCivil} />
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, marginTop: 18 }}>
-        <div style={{ height: 104, borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", alignItems: "center", padding: "0 18px" }}>
-          <IconBox icon={AlertTriangle} color={wanted ? COLORS.amber : COLORS.green} />
-          <div style={{ marginLeft: 15, display: "flex", flexDirection: "column" }}>
-            <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 750, letterSpacing: .45 }}>NÍVEL DE PROCURADO</div>
-            <div style={{ color: wanted ? COLORS.amber : COLORS.white, fontSize: 22, fontWeight: 800, marginTop: 8 }}>{wanted ? `${profile.procurado} estrela(s)` : "Sem procura"}</div>
-          </div>
-        </div>
-
-        <div style={{ height: 104, borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.panel2, display: "flex", alignItems: "center", padding: "0 18px" }}>
-          <IconBox icon={Timer} color={profile.prisaoAtual ? COLORS.red : COLORS.green} />
-          <div style={{ marginLeft: 15, display: "flex", flexDirection: "column" }}>
-            <div style={{ color: COLORS.muted, fontSize: 11, fontWeight: 750, letterSpacing: .45 }}>SITUAÇÃO PENAL</div>
-            <div style={{ color: profile.prisaoAtual ? COLORS.red : COLORS.white, fontSize: 22, fontWeight: 800, marginTop: 8 }}>{profile.prisaoAtual ? "Em prisão" : "Em liberdade"}</div>
-          </div>
-        </div>
-      </div>
+      <TwoColRow
+        left={<div style={{ width: "100%" }}><FieldCard icon={Briefcase} label="Emprego" value={profile.emprego} /></div>}
+        right={<div style={{ width: "100%" }}><FieldCard icon={Award} label="Cargo" value={profile.cargo} /></div>}
+      />
+      <TwoColRow
+        top={18}
+        left={<div style={{ width: "100%" }}><FieldCard icon={Building2} label="Organização" value={profile.organizacao} /></div>}
+        right={<div style={{ width: "100%" }}><FieldCard icon={Heart} label="Estado civil" value={profile.estadoCivil} /></div>}
+      />
+      <TwoColRow top={18} left={wantedCard} right={custodyCard} />
     </div>
   );
 }
